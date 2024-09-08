@@ -1,5 +1,5 @@
 # ask_name_and_file.py
-
+import blender_subprocess
 import blendplot_subprocess
 
 import os
@@ -59,9 +59,9 @@ def main():
         f"The file '{selected_file}' has been copied to the folder '{new_folder}' with the new name '{new_file_name}'.")
 
     #convert the file into a csv and use plend plot to greate an obj in a subprocess
-    blendplot_subprocess.create_obj(destination_path)
+    obj_path = blendplot_subprocess.create_obj(destination_path)
 
-
+    blender_subprocess.render_points(obj_path)
 
 if __name__ == "__main__":
     main()

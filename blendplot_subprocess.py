@@ -24,6 +24,8 @@ def create_obj(json_file_path):
     print("Output:\n", result.stdout)
     print("Errors:\n", result.stderr)
 
+    return obj_path
+
 
 
 

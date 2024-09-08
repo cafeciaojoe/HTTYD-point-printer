@@ -2,14 +2,18 @@ import bpy
 import math
 import mathutils
 import os
+import sys
 
 """
 This script needs to be run in Blender, either as a subprocess in an existing script,
 from the command line, or in the "Scripting" tab.
 """
 
+args = sys.argv[sys.argv.index("--") + 1:]
+print(args)
+
 # Define the path to your .obj file
-obj_file_path = "/Users/joseph/PycharmProjects/HTTYD-point-printer/working_files/test.obj"
+obj_file_path = args[0]
 
 # Ensure the scene is clear
 bpy.ops.object.select_all(action='SELECT')
