@@ -222,7 +222,10 @@ views = [
 ]
 
 # Specify the output directory explicitly
-output_directory = "/Users/joseph/PycharmProjects/HTTYD-point-printer/working_files/rendered_views"
+#output_directory = "/Users/joseph/PycharmProjects/HTTYD-point-printer/working_files/rendered_views"
+output_directory = os.path.dirname(obj_file_path)
+render_folder = 'rendered_views'
+output_directory = os.path.join(output_directory,render_folder)
 
 # Make sure the output directory exists
 if not os.path.exists(output_directory):

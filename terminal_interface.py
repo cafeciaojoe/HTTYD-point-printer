@@ -63,5 +63,7 @@ def main():
 
     blender_subprocess.render_points(obj_path)
 
+
+
 if __name__ == "__main__":
     main()
