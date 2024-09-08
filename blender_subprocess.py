@@ -2,13 +2,13 @@ import subprocess
 import os
 
 # Define the path to Blender executable
-blender_executable = "/path/to/blender"
+blender_executable = "/Applications/Blender.app/Contents/MacOS/Blender"
 
 # Define the path to the .obj file
-obj_file_path = "/path/to/your/file.obj"
+obj_file_path = "/Users/joseph/PycharmProjects/HTTYD-point-printer/working_files/test.obj"
 
 # Define the path to the Blender script
-blender_script_path = "/path/to/import_and_separate.py"
+blender_script_path = "/Users/joseph/PycharmProjects/HTTYD-point-printer/obj_to_render.py"
 
 # Run Blender in background mode with the specified script and .obj file
 subprocess.run([blender_executable, "-b", "--python", blender_script_path, "--", obj_file_path])
