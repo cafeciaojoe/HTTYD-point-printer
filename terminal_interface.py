@@ -1,5 +1,7 @@
 # ask_name_and_file.py
 
+import blendplot_subprocess
+
 import os
 import shutil
 from datetime import datetime
@@ -40,29 +42,24 @@ def main():
     # Get the current time and format it
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    # Create a new filename by concatenating the selected file name with the current time
+    file_name, file_extension = os.path.splitext(selected_file)
+    new_file_name = f"{file_name}_{current_time}{file_extension}"
+
     # Create a new folder named after the user and the current time
     new_folder = os.path.join(directory, f"{name}_{current_time}")
     os.makedirs(new_folder, exist_ok=True)
 
-    # Copy the selected file to the new folder
+    # Copy the selected file to the new folder with the new name
     source_path = os.path.join(directory, selected_file)
-    destination_path = os.path.join(new_folder, selected_file)
+    destination_path = os.path.join(new_folder, new_file_name)
     shutil.copy2(source_path, destination_path)
 
-    print(f"The file '{selected_file}' has been copied to the folder '{new_folder}'.")
+    print(
+        f"The file '{selected_file}' has been copied to the folder '{new_folder}' with the new name '{new_file_name}'.")
 
-    # Ask if the user wants to delete the original file
-    delete_original = input("Do you want to delete the original file? (yes/no): ").strip().lower()
-    if delete_original in ['yes', 'y']:
-        os.remove(source_path)
-        print(f"The original file '{selected_file}' has been deleted.")
-    else:
-        print("The original file has not been deleted.")
-
-#convert the file into a csv
-
-
-
+    #convert the file into a csv and use plend plot to greate an obj in a subprocess
+    blendplot_subprocess.create_obj(destination_path)
 
 
 

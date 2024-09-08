@@ -2,24 +2,29 @@ import json
 import csv
 import os
 
-def return_with_csv_extension(file_path):
-    file_name_with_extension = os.path.basename(file_path)
-    file_name, file_extension = os.path.splitext(file_name_with_extension)
-    return file_name + '.csv'
+"""Converts the .json files made in httyd to cvs to be usedin blendplot"""
 
-def load_accepted_positions(file_path):
+def return_path_to_csv(json_file_path):
+    directory = os.path.dirname(json_file_path)
+    file_name_with_extension = os.path.basename(json_file_path)
+    file_name, file_extension = os.path.splitext(file_name_with_extension)
+    file_name_with_csv_extension = file_name + '.csv'
+    csv_path = os.path.join(directory, file_name_with_csv_extension)
+    return csv_path
+
+def load_accepted_positions(json_file_path):
     #     https://stackoverflow.com/questions/36965507/writing-a-dictionary-to-a-text-file
 
-    with open(file_path, 'r') as f:
+    with open(json_file_path, 'r') as f:
         accepted_positions = json.loads(f.read())
         print('loaded %d position from save file' % (len(accepted_positions.keys())))
         'print(accepted_positions.keys())'
         'print(accepted_positions.items()'
     return accepted_positions
 
-def create_csv(file_path):
+def create_csv(json_file_path):
 
-    coord_dict = load_accepted_positions(file_path)
+    coord_dict = load_accepted_positions(json_file_path)
 
     "x's are 0 and 3"
     "y's are 1 and 4"
@@ -41,7 +46,7 @@ def create_csv(file_path):
     "length of each list is 2x78 = 156"
     "print(len(x))"
 
-    path_to_csv = 'working_files/' + return_with_csv_extension(file_path)
+    path_to_csv = return_path_to_csv(json_file_path)
 
     with open(path_to_csv, 'w') as f:
         writer = csv.writer(f)
