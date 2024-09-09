@@ -14,6 +14,7 @@ print(args)
 
 # Define the path to your .obj file
 obj_file_path = args[0]
+obj_file_name = os.path.basename(obj_file_path)
 
 # Ensure the scene is clear
 bpy.ops.object.select_all(action='SELECT')
@@ -177,7 +178,7 @@ grid_links.new(grid_bsdf.outputs['BSDF'], grid_material_output.inputs['Surface']
 grid.data.materials.append(grid_material)
 
 # Function to set up the camera and render the scene
-def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=5):
+def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor = 4):
     # Calculate the distance based on the bounding box size
     distance = max(size) * distance_factor
 
@@ -213,26 +214,35 @@ def render_view(view_name, camera_location, camera_rotation, output_directory, d
 
 # Define camera locations and rotations for each view
 views = [
-    ("front_view", (0, -1, 0), (math.radians(90), 0, 0)),
-    ("back_view", (0, 1, 0), (math.radians(-90), math.radians(180), 0)),
-    ("Lside_view", (1, 0, 0), (math.radians(90), 0, math.radians(90))),
-    ("Rside_view", (-1, 0, 0), (math.radians(90), 0, math.radians(-90))),
-    ("top_view", (0, 0, 1), (0, 0, 0)),
-    ("isometric_view", (1, -1, 1), (math.radians(55), 0, math.radians(45)))
+    ("Isometric", (1, -1, 1), (math.radians(52.5), 0, math.radians(45))),
+    ("Front", (0, -1, 0), (math.radians(90), 0, 0)),
+    ("Left", (1, 0, 0), (math.radians(90), 0, math.radians(90))),
+    ("Right", (-1, 0, 0), (math.radians(90), 0, math.radians(-90))),
+    ("Back", (0, 1, 0), (math.radians(-90), math.radians(180), 0)),
+    ("Top", (0, 0, 1), (0, 0, 0))
+
 ]
 
 # Specify the output directory explicitly
-#output_directory = "/Users/joseph/PycharmProjects/HTTYD-point-printer/working_files/rendered_views"
-output_directory = os.path.dirname(obj_file_path)
+file_output_directory = os.path.dirname(obj_file_path)
 render_folder = 'rendered_views'
-output_directory = os.path.join(output_directory,render_folder)
+render_output_directory = os.path.join(file_output_directory,render_folder)
 
 # Make sure the output directory exists
-if not os.path.exists(output_directory):
-    os.makedirs(output_directory)
+if not os.path.exists(render_output_directory):
+    os.makedirs(render_output_directory)
 
 # Render each view
 for view_name, camera_location, camera_rotation in views:
-    render_view(view_name, camera_location, camera_rotation, output_directory)
+    render_view(view_name, camera_location, camera_rotation, render_output_directory)
+
+blender_file_name, obj_file_ext = os.path.splitext(obj_file_name)
+blender_file_name = blender_file_name + ".blend"
+
+# Save the Blender file
+blender_file_path = os.path.join(file_output_directory, blender_file_name)
+bpy.ops.wm.save_as_mainfile(filepath=blender_file_path)
+
+print(f"Blender file saved to: {blender_file_path}")
 
 print("OBJ file imported, separated, spheres added, grid added, and views rendered.")

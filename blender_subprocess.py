@@ -6,7 +6,8 @@ def render_points(obj_path):
     blender_executable = "/Applications/Blender.app/Contents/MacOS/Blender"
 
     # Define the path to the Blender script
-    blender_script_path = "/Users/joseph/PycharmProjects/HTTYD-point-printer/obj_to_render.py"
+    current_directory = os.getcwd()
+    blender_script_path = os.path.join(current_directory,"obj_to_render.py")
 
     # Run Blender in background mode with the specified script and .obj file
     subprocess.run([blender_executable, "-b", "--python", blender_script_path, "--", obj_path])

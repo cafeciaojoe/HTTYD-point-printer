@@ -1,4 +1,7 @@
 # ask_name_and_file.py
+from epson_printer import epsonprinter
+import time
+
 import blender_subprocess
 import blendplot_subprocess
 
@@ -9,6 +12,46 @@ import string
 
 def list_json_files(directory):
     return [f for f in os.listdir(directory) if f.endswith('.json')]
+
+def list_rendered_images(directory):
+    return [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith('.png')]
+
+#def list_rendered_images(directory):
+#    return [f for f in os.listdir(directory) if f.endswith('.png')]
+
+def thermal_print(images):
+    """these values are the vendor and product id converted to integers"""
+    printer = epsonprinter.EpsonPrinter(1208, 514)
+    current_time = time.localtime()
+    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", current_time)
+    printer.center()
+    printer.print_text("Thank you for using...")
+
+    printer.linefeed(2)
+    printer.left_justified()
+    printer.print_image_from_file("httyd_logo.png")
+    printer.linefeed(2)
+
+    printer.linefeed()
+    printer.left_justified()
+    printer.print_text("Here are 5 rendered views of your drone's Umwelt")
+    printer.linefeed()
+
+    for image in images:
+        print(f'printing: {image}')
+        printer.print_image_from_file(image)
+        filename = os.path.basename(image)
+        printer.print_text(filename)
+        printer.linefeed(2)
+
+    printer.linefeed(2)
+    printer.center()
+    printer.print_text("find out more at www.cafeciaojoe.com/httyd")
+    printer.linefeed(2)
+    printer.print_text(formatted_time)
+
+    printer.linefeed(10)
+    printer.cut()
 
 def main():
     # Ask for the user's name
@@ -63,7 +106,11 @@ def main():
 
     blender_subprocess.render_points(obj_path)
 
+    rendered_images_directory = os.path.join(new_folder, 'rendered_views')
+    rendered_images_path_list = list_rendered_images(rendered_images_directory)
 
+    thermal_print(rendered_images_path_list)
 
 if __name__ == "__main__":
     main()
+    #thermal_print(0)
