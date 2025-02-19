@@ -19,13 +19,13 @@ def list_rendered_images(directory):
 #def list_rendered_images(directory):
 #    return [f for f in os.listdir(directory) if f.endswith('.png')]
 
-def thermal_print(images):
+def thermal_print(images, name):
     """these values are the vendor and product id converted to integers"""
     printer = epsonprinter.EpsonPrinter(1208, 514)
     current_time = time.localtime()
     formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", current_time)
     printer.center()
-    printer.print_text("Thank you for using...")
+    printer.print_text(f"Hello {name}! Thank you for using...")
 
     printer.linefeed(2)
     printer.left_justified()
@@ -38,10 +38,17 @@ def thermal_print(images):
     printer.linefeed()
 
     for image in images:
+        # print(f'printing: {image}')
+        # printer.print_image_from_file(image)
+        # filename = os.path.basename(image)
+        # printer.print_text(filename)
+        # printer.linefeed(2)
+
         print(f'printing: {image}')
         printer.print_image_from_file(image)
         filename = os.path.basename(image)
-        printer.print_text(filename)
+        filename_without_extension, _ = os.path.splitext(filename)
+        printer.print_text(f"{filename_without_extension} view")
         printer.linefeed(2)
 
     printer.linefeed(2)
@@ -109,7 +116,7 @@ def main():
     rendered_images_directory = os.path.join(new_folder, 'rendered_views')
     rendered_images_path_list = list_rendered_images(rendered_images_directory)
 
-    thermal_print(rendered_images_path_list)
+    thermal_print(rendered_images_path_list, name)
 
 if __name__ == "__main__":
     main()

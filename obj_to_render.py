@@ -177,6 +177,13 @@ grid_links.new(grid_bsdf.outputs['BSDF'], grid_material_output.inputs['Surface']
 # Assign the material to the grid
 grid.data.materials.append(grid_material)
 
+# Add a triangular prism (cone) at coordinate (0, 0, 0)
+bpy.ops.mesh.primitive_cone_add(vertices=3, radius1=0.5, depth=0.5, location=(0, 0, 0))
+triangular_prism = bpy.context.object
+
+# Rotate the triangular prism to point towards the positive y-axis
+triangular_prism.rotation_euler = (math.radians(90), 0, 0)
+
 # Function to set up the camera and render the scene
 def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor = 4):
     # Calculate the distance based on the bounding box size
