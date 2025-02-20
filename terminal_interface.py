@@ -35,7 +35,7 @@ def thermal_print(images, name):
 
     printer.linefeed()
     printer.center()
-    printer.print_text("Here are 5 rendered views of your drone's sensory field, their 'Umwelt'. ")
+    printer.print_text("Here are 6 rendered views of your drone's sensory field, its 'umwelt'. ")
     printer.linefeed()
     printer.print_text("Each sphere represents an area relative to the drone where it can sense you.")
     printer.linefeed()
@@ -43,7 +43,7 @@ def thermal_print(images, name):
     printer.linefeed()
     printer.print_text("size, shape and density of a drone's")
     printer.linefeed()
-    printer.print_text("sensory field can lead to complex")
+    printer.print_text("umwelt can lead to complex")
     printer.linefeed()
     printer.print_text("and meaningful interactions.")
 

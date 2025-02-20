@@ -67,7 +67,7 @@ with open(csv_file_path, newline='') as csvfile:
         add_sphere_at_location((x, y, z), sphere_diameter)
 
 # Add a triangular prism at (0, 0, 0) and rotate it to point in the positive X direction
-bpy.ops.mesh.primitive_cone_add(vertices=4, radius1=0.1, depth=0.3, location=(0, 0, 0))
+bpy.ops.mesh.primitive_cone_add(vertices=4, radius1=0.1, depth=0.2, location=(0, 0, 0))
 prism = bpy.context.object
 prism.rotation_euler = (0, math.radians(90), 0)
 
