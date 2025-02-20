@@ -55,6 +55,9 @@ def create_csv(json_file_path):
         for i in range(len(x)):
             row = [x[i],y[i],z[i]]
             writer.writerow(row)
+        
+        #Write an additional 0,0,0 to the end of the csv 
+        writer.writerow([0,0,0])
 
         print('plotted %d points to csv' % len(x))
 

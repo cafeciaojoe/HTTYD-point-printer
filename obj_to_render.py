@@ -88,7 +88,7 @@ for obj in separated_objects:
     add_sphere_around_object(obj, sphere_diameter)
 
 # Enable transparency in render settings
-bpy.context.scene.render.film_transparent = True
+#bpy.context.scene.render.film_transparent = True
 
 # Add a basic light to the scene
 bpy.ops.object.light_add(type='SUN', location=(10, 10, 10))
@@ -114,6 +114,11 @@ for obj in bpy.context.scene.objects:
 
 bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
 bpy.ops.object.join()
+
+# Rotate the merged object
+merged_object = bpy.context.active_object
+merged_object.rotation_euler[0] += math.radians(90)  # Rotate 180 degrees around X-axis
+merged_object.rotation_euler[2] += math.radians(-90)  # Rotate -90 degrees around Z-axis
 
 # Calculate the bounding box of the entire merged model
 merged_object = bpy.context.active_object
@@ -176,13 +181,6 @@ grid_links.new(grid_bsdf.outputs['BSDF'], grid_material_output.inputs['Surface']
 
 # Assign the material to the grid
 grid.data.materials.append(grid_material)
-
-# Add a triangular prism (cone) at coordinate (0, 0, 0)
-bpy.ops.mesh.primitive_cone_add(vertices=3, radius1=0.5, depth=0.5, location=(0, 0, 0))
-triangular_prism = bpy.context.object
-
-# Rotate the triangular prism to point towards the positive y-axis
-triangular_prism.rotation_euler = (math.radians(90), 0, 0)
 
 # Function to set up the camera and render the scene
 def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor = 4):
