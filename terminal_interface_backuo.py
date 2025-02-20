@@ -2,8 +2,6 @@
 from epson_printer import epsonprinter
 import time
 
-import json_to_CSV
-
 import blender_subprocess
 import blendplot_subprocess
 
@@ -112,10 +110,10 @@ def main():
     print(
         f"The file '{selected_file}' has been copied to the folder '{new_folder}' with the new name '{new_file_name}'.")
 
-    #convert the file into a csv 
-    csv_path = json_to_CSV.create_csv(destination_path)
+    #convert the file into a csv and use blend plot to generate an obj in a subprocess
+    obj_path = blendplot_subprocess.create_obj(destination_path)
 
-    blender_subprocess.render_points(csv_path)
+    blender_subprocess.render_points(obj_path)
 
     rendered_images_directory = os.path.join(new_folder, 'rendered_views')
     rendered_images_path_list = list_rendered_images(rendered_images_directory)
