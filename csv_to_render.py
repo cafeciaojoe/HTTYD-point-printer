@@ -21,7 +21,7 @@ bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 
 # Define the diameter of the spheres
-sphere_diameter = 1.5
+sphere_diameter = .3
 
 # Create a new material for the spheres
 sphere_material = bpy.data.materials.new(name="SphereMaterial")
@@ -66,13 +66,13 @@ with open(csv_file_path, newline='') as csvfile:
         x, y, z = map(float, row)
         add_sphere_at_location((x, y, z), sphere_diameter)
 
-# Add a 0.25m cube at (0, 0, 0) and rotate it to point in the positive Y direction
-bpy.ops.mesh.primitive_cube_add(size=0.25, location=(0, 0, 0))
-cube = bpy.context.object
-cube.rotation_euler = (0, 0, math.radians(90))
+# Add a triangular prism at (0, 0, 0) and rotate it to point in the positive X direction
+bpy.ops.mesh.primitive_cone_add(vertices=4, radius1=0.1, depth=0.3, location=(0, 0, 0))
+prism = bpy.context.object
+prism.rotation_euler = (0, math.radians(90), 0)
 
 # Enable transparency in render settings
-# bpy.context.scene.render.film_transparent = True
+bpy.context.scene.render.film_transparent = True
 
 # Add a basic light to the scene
 bpy.ops.object.light_add(type='SUN', location=(10, 10, 10))
@@ -89,6 +89,32 @@ lineset.select_silhouette = True
 lineset.select_border = True
 lineset.select_crease = True
 lineset.select_edge_mark = True
+
+# Set up the compositor to add a white background
+bpy.context.scene.use_nodes = True
+nodes = bpy.context.scene.node_tree.nodes
+links = bpy.context.scene.node_tree.links
+
+# Clear default nodes
+for node in nodes:
+    nodes.remove(node)
+
+# Add Render Layers node
+render_layers = nodes.new(type='CompositorNodeRLayers')
+render_layers.location = 0, 0
+
+# Add Alpha Over node
+alpha_over = nodes.new(type='CompositorNodeAlphaOver')
+alpha_over.location = 200, 0
+alpha_over.inputs[1].default_value = (1, 1, 1, 1)  # Set background to white
+
+# Add Composite node
+composite = nodes.new(type='CompositorNodeComposite')
+composite.location = 400, 0
+
+# Link nodes
+links.new(render_layers.outputs['Image'], alpha_over.inputs[2])
+links.new(alpha_over.outputs['Image'], composite.inputs['Image'])
 
 # Merge all objects into a single object
 bpy.ops.object.select_all(action='DESELECT')
@@ -129,38 +155,8 @@ grid_size_y = max_y - min_y
 grid_location = (center.x, center.y, min_z - 0.01)
 print(f"Grid Size: ({grid_size_x}, {grid_size_y}), Grid Location: {grid_location}")
 
-# # Create the grid
-# bpy.ops.mesh.primitive_plane_add(size=1, location=grid_location)
-# grid = bpy.context.object
-# grid.scale = (20, 20, 1)
-
-# # Add a material to the grid to make it more visible
-# grid_material = bpy.data.materials.new(name="GridMaterial")
-# grid_material.use_nodes = True
-# grid_nodes = grid_material.node_tree.nodes
-# grid_links = grid_material.node_tree.links
-
-# # Clear default nodes
-# for node in grid_nodes:
-#     grid_nodes.remove(node)
-
-# # Add Principled BSDF node
-# grid_bsdf = grid_nodes.new(type='ShaderNodeBsdfPrincipled')
-# grid_bsdf.location = 0, 0
-# grid_bsdf.inputs['Base Color'].default_value = (0.8, 0.8, 0.8, 1)  # Light gray
-
-# # Add Material Output node
-# grid_material_output = grid_nodes.new(type='ShaderNodeOutputMaterial')
-# grid_material_output.location = 200, 0
-
-# # Link nodes
-# grid_links.new(grid_bsdf.outputs['BSDF'], grid_material_output.inputs['Surface'])
-
-# # Assign the material to the grid
-# grid.data.materials.append(grid_material)
-
 # Function to set up the camera and render the scene
-def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=4):
+def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=2):
     # Calculate the distance based on the bounding box size
     distance = max(size) * distance_factor
 
@@ -197,10 +193,10 @@ def render_view(view_name, camera_location, camera_rotation, output_directory, d
 # Define camera locations and rotations for each view
 views = [
     ("Isometric", (1, -1, 1), (math.radians(52.5), 0, math.radians(45))),
-    ("Front", (0, -1, 0), (math.radians(90), 0, 0)),
-    ("Left", (1, 0, 0), (math.radians(90), 0, math.radians(90))),
-    ("Right", (-1, 0, 0), (math.radians(90), 0, math.radians(-90))),
-    ("Back", (0, 1, 0), (math.radians(-90), math.radians(180), 0)),
+    ("Right", (0, -1, 0), (math.radians(90), 0, 0)),
+    ("Front", (1, 0, 0), (math.radians(90), 0, math.radians(90))),
+    ("Back", (-1, 0, 0), (math.radians(90), 0, math.radians(-90))),
+    ("Left", (0, 1, 0), (math.radians(-90), math.radians(180), 0)),
     ("Top", (0, 0, 1), (0, 0, 0))
 ]
 

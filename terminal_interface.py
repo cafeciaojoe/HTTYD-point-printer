@@ -32,12 +32,22 @@ def thermal_print(images, name):
     printer.linefeed(2)
     printer.left_justified()
     printer.print_image_from_file("httyd_logo.png")
-    printer.linefeed(2)
 
     printer.linefeed()
-    printer.left_justified()
-    printer.print_text("Here are 5 rendered views of your drone's Umwelt")
+    printer.center()
+    printer.print_text("Here are 5 rendered views of your drone's sensory field, their 'Umwelt'. ")
     printer.linefeed()
+    printer.print_text("Each sphere represents an area relative to the drone where it can sense you.")
+    printer.linefeed()
+    printer.print_text("Our work demonstrates that changing the")
+    printer.linefeed()
+    printer.print_text("size, shape and density of a drone's")
+    printer.linefeed()
+    printer.print_text("sensory field can lead to complex")
+    printer.linefeed()
+    printer.print_text("and meaningful interactions.")
+
+    printer.linefeed(2)
 
     for image in images:
         # print(f'printing: {image}')
@@ -50,12 +60,14 @@ def thermal_print(images, name):
         printer.print_image_from_file(image)
         filename = os.path.basename(image)
         filename_without_extension, _ = os.path.splitext(filename)
+        printer.center()
         printer.print_text(f"{filename_without_extension} view")
         printer.linefeed(2)
 
-    printer.linefeed(2)
     printer.center()
-    printer.print_text("find out more at www.cafeciaojoe.com/httyd")
+    printer.print_text("Find our paper and pictorial at:")
+    printer.linefeed()
+    printer.print_text("www.CafeCiaoJoe.com/httyd")
     printer.linefeed(2)
     printer.print_text(formatted_time)
 
