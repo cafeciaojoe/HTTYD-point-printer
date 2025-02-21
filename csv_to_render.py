@@ -16,12 +16,27 @@ print(args)
 # Define the path to your .csv file
 csv_file_path = args[0]
 
+# Define the path to your .csv file
+csv_file_path = args[0]
+
+# Set sphere diameter based on the CSV filename
+if "A0A0A0A0A3" in csv_file_path:
+    sphere_diameter = .20
+elif "A0A0A0A0A4" in csv_file_path:
+    sphere_diameter = .15
+elif "A0A0A0A0A5" in csv_file_path:
+    sphere_diameter = .30
+elif "A0A0A0A0A6" in csv_file_path:
+    sphere_diameter = .25
+else:
+    sphere_diameter = .20  # Default value
+
 # Ensure the scene is clear
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 
-# Define the diameter of the spheres
-sphere_diameter = .3
+# # Define the diameter of the spheres
+# sphere_diameter = .3
 
 # Create a new material for the spheres
 sphere_material = bpy.data.materials.new(name="SphereMaterial")
@@ -59,12 +74,13 @@ def add_sphere_at_location(location, diameter):
         sphere.data.materials.append(sphere_material)
 
 # Read the CSV file and add spheres at each point
+# note the z value is flipped to negative to compensate between the drone reference frame and blender reference frame 
 with open(csv_file_path, newline='') as csvfile:
     csv_reader = csv.reader(csvfile)
     next(csv_reader)  # Skip the header row
     for row in csv_reader:
         x, y, z = map(float, row)
-        add_sphere_at_location((x, y, z), sphere_diameter)
+        add_sphere_at_location((x, y, -z), sphere_diameter)
 
 # Add a triangular prism at (0, 0, 0) and rotate it to point in the positive X direction
 bpy.ops.mesh.primitive_cone_add(vertices=4, radius1=0.1, depth=0.15, location=(.2, 0, 0))
@@ -185,12 +201,6 @@ print(f"Bounding Box Min: ({min_x}, {min_y}, {min_z})")
 print(f"Bounding Box Max: ({max_x}, {max_y}, {max_z})")
 print(f"Bounding Box Center: {center}")
 print(f"Bounding Box Size: {size}")
-
-# Add a grid below the model
-grid_size_x = max_x - min_x
-grid_size_y = max_y - min_y
-grid_location = (center.x, center.y, min_z - 0.01)
-print(f"Grid Size: ({grid_size_x}, {grid_size_y}), Grid Location: {grid_location}")
 
 # Function to set up the camera and render the scene
 def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=1.75):

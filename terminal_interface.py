@@ -128,8 +128,6 @@ def main():
     source_path = os.path.join(directory, selected_file)
     destination_path = os.path.join(new_folder, new_file_name)
     shutil.copy2(source_path, destination_path)
-    #delete the selected file, so that the next demo can start fresh. 
-    os.remove(source_path)
 
     print(
         f"The file '{selected_file}' has been copied to the folder '{new_folder}' with the new name '{new_file_name}'.")
@@ -143,6 +141,9 @@ def main():
     rendered_images_path_list = list_rendered_images(rendered_images_directory)
 
     thermal_print(rendered_images_path_list, name)
+
+    #delete the selected file after the print has completed, so that the next demo can start fresh. 
+    os.remove(source_path)
 
 if __name__ == "__main__":
     main()
