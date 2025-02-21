@@ -67,9 +67,16 @@ with open(csv_file_path, newline='') as csvfile:
         add_sphere_at_location((x, y, z), sphere_diameter)
 
 # Add a triangular prism at (0, 0, 0) and rotate it to point in the positive X direction
-bpy.ops.mesh.primitive_cone_add(vertices=4, radius1=0.1, depth=0.2, location=(0, 0, 0))
+bpy.ops.mesh.primitive_cone_add(vertices=4, radius1=0.1, depth=0.15, location=(.2, 0, 0))
 prism = bpy.context.object
 prism.rotation_euler = (0, math.radians(90), 0)
+
+# Add four torus objects scaled to 0.1 in x, y, z
+torus_locations = [(0.1, 0.1, 0), (-0.1, 0.1, 0), (-0.1, -0.1, 0), (0.1, -0.1, 0)]
+for loc in torus_locations:
+    bpy.ops.mesh.primitive_torus_add(location=loc)
+    torus = bpy.context.object
+    torus.scale = (0.1, 0.1, 0.1)
 
 # Enable transparency in render settings
 bpy.context.scene.render.film_transparent = True
@@ -79,6 +86,23 @@ bpy.ops.object.light_add(type='SUN', location=(10, 10, 10))
 
 # Enable Freestyle for outlines
 bpy.context.scene.render.use_freestyle = True
+
+# Get the first view layer
+view_layer = bpy.context.scene.view_layers[0]
+
+# Create a new line set for Freestyle
+lineset = view_layer.freestyle_settings.linesets.new(name="LineSet")
+lineset.select_silhouette = True
+lineset.select_border = True
+lineset.select_crease = True
+lineset.select_edge_mark = True
+
+# Create a new line style
+linestyle = bpy.data.linestyles.new(name="LineStyle")
+lineset.linestyle = linestyle
+
+# Set the line thickness
+linestyle.thickness = 8.0  # Adjust the thickness value as needed
 
 # Get the first view layer
 view_layer = bpy.context.scene.view_layers[0]
@@ -139,6 +163,19 @@ for vert in merged_object.bound_box:
     max_y = max(max_y, v_world.y)
     max_z = max(max_z, v_world.z)
 
+# Calculate the absolute maximum value for each axis
+abs_max_x = max(abs(min_x), abs(max_x))
+abs_max_y = max(abs(min_y), abs(max_y))
+abs_max_z = max(abs(min_z), abs(max_z))
+
+# Define the new bounding box extents
+min_x = -abs_max_x
+max_x = abs_max_x
+min_y = -abs_max_y
+max_y = abs_max_y
+min_z = -abs_max_z
+max_z = abs_max_z
+
 # Calculate the center and size of the bounding box
 center = mathutils.Vector(((min_x + max_x) / 2, (min_y + max_y) / 2, (min_z + max_z) / 2))
 size = mathutils.Vector((max_x - min_x, max_y - min_y, max_z - min_z))
@@ -156,7 +193,7 @@ grid_location = (center.x, center.y, min_z - 0.01)
 print(f"Grid Size: ({grid_size_x}, {grid_size_y}), Grid Location: {grid_location}")
 
 # Function to set up the camera and render the scene
-def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=2):
+def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=1.5):
     # Calculate the distance based on the bounding box size
     distance = max(size) * distance_factor
 
@@ -176,7 +213,7 @@ def render_view(view_name, camera_location, camera_rotation, output_directory, d
 
     # Set render resolution and file format
     bpy.context.scene.render.resolution_x = 1920
-    bpy.context.scene.render.resolution_y = 1080
+    bpy.context.scene.render.resolution_y = 1920
     bpy.context.scene.render.image_settings.file_format = 'PNG'
     bpy.context.scene.render.image_settings.color_mode = 'RGBA'  # Ensure alpha channel is used
 
