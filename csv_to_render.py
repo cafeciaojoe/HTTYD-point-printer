@@ -102,7 +102,7 @@ linestyle = bpy.data.linestyles.new(name="LineStyle")
 lineset.linestyle = linestyle
 
 # Set the line thickness
-linestyle.thickness = 8.0  # Adjust the thickness value as needed
+linestyle.thickness = 4.0  # Adjust the thickness value as needed
 
 # Get the first view layer
 view_layer = bpy.context.scene.view_layers[0]
@@ -193,7 +193,7 @@ grid_location = (center.x, center.y, min_z - 0.01)
 print(f"Grid Size: ({grid_size_x}, {grid_size_y}), Grid Location: {grid_location}")
 
 # Function to set up the camera and render the scene
-def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=1.5):
+def render_view(view_name, camera_location, camera_rotation, output_directory, distance_factor=1.75):
     # Calculate the distance based on the bounding box size
     distance = max(size) * distance_factor
 
@@ -212,8 +212,8 @@ def render_view(view_name, camera_location, camera_rotation, output_directory, d
     # camera.data.lens = 50  # Default is 50mm, adjust as necessary
 
     # Set render resolution and file format
-    bpy.context.scene.render.resolution_x = 1920
-    bpy.context.scene.render.resolution_y = 1920
+    bpy.context.scene.render.resolution_x = 900
+    bpy.context.scene.render.resolution_y = 600
     bpy.context.scene.render.image_settings.file_format = 'PNG'
     bpy.context.scene.render.image_settings.color_mode = 'RGBA'  # Ensure alpha channel is used
 

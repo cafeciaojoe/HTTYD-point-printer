@@ -49,19 +49,29 @@ def thermal_print(images, name):
 
     printer.linefeed(2)
 
-    for image in images:
-        # print(f'printing: {image}')
-        # printer.print_image_from_file(image)
-        # filename = os.path.basename(image)
-        # printer.print_text(filename)
-        # printer.linefeed(2)
+    # Define the desired order of images
+    desired_order = ["Isometric", "Top", "Left", "Right", "Front", "Back"]
+    ordered_images = []
 
+    # Iterate over each view in the desired order
+    for view in desired_order:
+        # Iterate over each image in the provided images list
+        for image in images:
+            # Check if the view name (in lowercase) is part of the image's filename (also in lowercase)
+            if view.lower() in os.path.basename(image).lower():
+                # If a match is found, add the image to the ordered_images list
+                ordered_images.append(image)
+                # Break the inner loop to move to the next view in the desired order
+                break
+
+    for image in ordered_images:
         print(f'printing: {image}')
         printer.print_image_from_file(image)
         filename = os.path.basename(image)
         filename_without_extension, _ = os.path.splitext(filename)
         printer.center()
         printer.print_text(f"{filename_without_extension} view")
+        time.sleep(0.5)
         printer.linefeed(2)
 
     printer.center()
